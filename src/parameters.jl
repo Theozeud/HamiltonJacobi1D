@@ -1,4 +1,4 @@
-struct Parameters
+struct HJParameters
     T               # Final Time
     Nt              # Number of time iterations
     Δt              # Timestep
@@ -11,7 +11,7 @@ struct Parameters
     u0              # Function Initial condition
     U0              # Initial condition evaluated on space
         
-    function Parameters(;T, Nt, L, Nx, H, u0)
+    function HJParameters(;T, Nt, L, Nx, H, u0)
         Δt      = T/Nt
         time    = range(0,T,Nt+1)
         Δx      = L/(Nx-1)
@@ -22,7 +22,7 @@ struct Parameters
 end
 
 
-function Base.show(io::IO, params::Parameters)
+function Base.show(io::IO, params::HJParameters)
     printstyled(io, "Parameters :"; bold = true)
     println(io,"")
     println(io, "Time = [0,$(params.T)]")
