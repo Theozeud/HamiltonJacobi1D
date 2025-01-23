@@ -38,6 +38,10 @@ function animation(sol; d::Real = 10, fps::Int = 30, truesol = nothing)
         # Create plots at rescaled time t
         pltsol = plot(space, interpol, label = sol.name, xlim = xLim, ylim= axis, legend=:bottomleft, lc=:black)
 
+        # Plot of true sol
+        if !isnothing(truesol)
+
+        end
         pltsol
     end
 

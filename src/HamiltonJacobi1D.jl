@@ -1,7 +1,7 @@
 module HamiltonJacobi1D
 
     using LinearAlgebra     # For matrix computations
-    using UnPack            # Useful tools to handle structure in Julia
+    using UnPack            # Useful tool to unpack structure in Julia
 
     abstract type HJScheme end
      
@@ -30,17 +30,20 @@ module HamiltonJacobi1D
             new{typeof(scheme)}(params, equation, scheme, name)
         end
     end
+    function HJProblem(prob::HJProblem; params = prob.params)
+        HJProblem(params, prob.equation, prob.scheme, prob.name)
+    end
     
     include("solution.jl")
 
     solve(prob::HJProblem) = solve(prob.params, prob.equation, prob.scheme, prob.name)
     
     function solve(params::HJParameters, equation::HJEquation, scheme::HJScheme, name::String = "")
-        # INITIALIZATION
-        @unpack Nx, Nt, space, u0 = params
+        @unpack Nx, Nt, space = params
+        @unpack u0 = equation
         # ALLOCATION FOR THE SOLUTION
         U  = zeros(Float64, Nx, Nt+1)
-        # STORE INITIAL STATE
+        # INITIALIZATION
         U[:,1]  .= u0.(space)
         # PERFORMSTEP (Currently it is all steps)
         performstep!(scheme, params, equation, U)
