@@ -18,9 +18,9 @@ function numericalHamiltonian(scheme::Upwind, H, x, y)
 end
 
 
-function solve(scheme::Upwind, params::Parameters)
+function solve(scheme::Upwind, prob::HJProblem)
     # DISCRETIZATION PARAMETERS
-    @unpack Nt, Δt, Nx, Δx, H, U0 = params
+    @unpack Nt, Δt, Nx, Δx, H, U0 = prob.params
     # ALLOCATION
     U       = zeros(Float64, Nx, Nt+1)
     # STORE INITIAL STATE
@@ -33,5 +33,5 @@ function solve(scheme::Upwind, params::Parameters)
         end
         U[Nx,n+1] = U[Nx,n]  - Δt * numericalHamiltonian(scheme, H, (U[Nx,n] - U[Nx-1,n]) / Δx , (U[1,n] - U[Nx,n]) / Δx)
     end
-    U
+    HJSolution(prob, U)
 end

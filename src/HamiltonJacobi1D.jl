@@ -2,23 +2,29 @@ module HamiltonJacobi1D
 
     using LinearAlgebra     # For matrix computations
     using UnPack            # Useful tools to handle structure in Julia
+
+    abstract type HJScheme end
      
-    export Parameters, Problem
+    export HJParameters, HJProblem, HJSolution
 
     include("parameters.jl")
 
-    abstract type HJScheme end
-
-    struct Problem{TS <: HJScheme}
-        params::Parameters
-        scheme::TS
-        function Problem(;T, Nt, L, Nx, H, u0, scheme)
-            new{typeof(scheme)}(Parameters(;T = T, Nt = Nt, L = L, Nx = Nx, H = H, u0 = u0), scheme)
+    struct HJProblem{TS <: HJScheme}
+        params::HJParameters        # Parameters
+        scheme::TS                  # Scheme
+        name::String                # Name given to the problem
+        function HJProblem(;T, Nt, L, Nx, H, u0, scheme, name = "")
+            new{typeof(scheme)}(HJParameters(;T = T, Nt = Nt, L = L, Nx = Nx, H = H, u0 = u0), scheme, name)
+        end
+        function HJProblem(params::HJParameters, scheme::HJScheme, name = "")
+            new{typeof(scheme)}(params, scheme, name)
         end
     end
     
-    solve(scheme::HJScheme, ::Parameters) = @error "No solve function for the scheme $(typeof(scheme))"
-    solve(prob::Problem) = solve(prob.scheme, prob.params)
+    include("solution.jl")
+
+    solve(params::HJParameters, scheme::HJScheme, name::String = "") = solve(Problem(params, scheme, name))
+    solve(prob::HJProblem) = solve(prob.scheme, prob)
 
     export Upwind
     export solve
