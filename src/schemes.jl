@@ -18,13 +18,10 @@ function numericalHamiltonian(scheme::Upwind, H, x, y)
 end
 
 
-function solve(scheme::Upwind, prob::HJProblem)
+function performstep!(scheme::Upwind, params::HJParameters, equation::HJEquation, U)
     # DISCRETIZATION PARAMETERS
-    @unpack Nt, Δt, Nx, Δx, H, U0 = prob.params
-    # ALLOCATION
-    U       = zeros(Float64, Nx, Nt+1)
-    # STORE INITIAL STATE
-    U[:,1]  .= U0
+    @unpack Nt, Δt, Nx, Δx = params
+    @unpack H = equation
     # LOOP FOR TIME ITERATIONS
     for n in 1:Nt
         U[1,n+1] = U[1,n]  - Δt * numericalHamiltonian(scheme, H, (U[1,n] - U[end,n]) / Δx , (U[2,n] - U[1,n]) / Δx)
@@ -33,5 +30,7 @@ function solve(scheme::Upwind, prob::HJProblem)
         end
         U[Nx,n+1] = U[Nx,n]  - Δt * numericalHamiltonian(scheme, H, (U[Nx,n] - U[Nx-1,n]) / Δx , (U[1,n] - U[Nx,n]) / Δx)
     end
-    HJSolution(prob, U)
+    nothing
 end
+
+# LAX-FRIEDRICH

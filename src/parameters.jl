@@ -7,17 +7,12 @@ struct HJParameters
     Nx              # Size of the grids in real space
     Δx              # Spacestep
     space           # Space domain
-    H               # Hamiltonian
-    u0              # Function Initial condition
-    U0              # Initial condition evaluated on space
-        
-    function HJParameters(;T, Nt, L, Nx, H, u0)
+    function HJParameters(;T, Nt, L, Nx)
         Δt      = T/Nt
         time    = range(0,T,Nt+1)
         Δx      = L/(Nx-1)
         space   = range(0,L,Nx)
-        U0      = u0.(space)
-        new(T, Nt, Δt, time, L, Nx, Δx, space, H, u0, U0)
+        new(T, Nt, Δt, time, L, Nx, Δx, space)
     end
 end
 
