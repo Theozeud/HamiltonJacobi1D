@@ -1,0 +1,12 @@
+name = "HamiltonJacobi1D"
+uuid = "3006cc2c-7da7-48f5-8dd9-38b10ba77135"
+authors = ["Théo Duez <42682941+Theozeud@users.noreply.github.com> and contributors"]
+version = "1.0.0-DEV"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
+
+[compat]
+LinearAlgebra = "1.11.0"
+UnPack = "1.0.2"
