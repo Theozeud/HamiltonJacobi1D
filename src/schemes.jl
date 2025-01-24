@@ -9,7 +9,7 @@ function numericalHamiltonian(scheme::Upwind, H, x, y)
     if x ≥ α0 && y ≥ α0 
         return H(x)
     elseif x ≥ α0 && y < α0
-        return  H(x) +  H(y)
+        return  H(x) +  H(y) - H(α0)
     elseif x < α0 && y ≥ α0
         return H(α0)
     else
