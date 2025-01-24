@@ -1,0 +1,13 @@
+## TO DO
+
+- compute by hand and add the full analytical solution for the "bump" equation
+- do the same for the "minus" bump equation
+- plot convergence and do different things depending on there is an analytical solution
+- Find another scheme to add as Lax Friedrichs and Semi Lagrangian Scheme
+
+
+
+
+#### BIblio
+- Différentes méthodes HJ
+    -> splitting donc double
