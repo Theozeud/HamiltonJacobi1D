@@ -3,34 +3,35 @@ struct HJParameters
     Nt              # Number of time iterations
     Δt              # Timestep
     time            # Timespan
-    L               # Space domain is [0,L]
+    Linf            # Space domain is [Linf,Lsup]
+    Lsup            # 
     Nx              # Size of the grids in real space
     Δx              # Spacestep
     space           # Space domain
-    function HJParameters(;T, Nt, L, Nx)
+    function HJParameters(;T, Nt, Linf, Lsup, Nx)
         Δt      = T/Nt
         time    = range(0,T,Nt+1)
-        Δx      = L/(Nx-1)
-        space   = range(0,L,Nx)
-        new(T, Nt, Δt, time, L, Nx, Δx, space)
+        Δx      = (Lsup - Linf)/(Nx-1)
+        space   = range(Linf,Lsup,Nx)
+        new(T, Nt, Δt, time, Linf, Lsup, Nx, Δx, space)
     end
-    function HJParameters(;T, Δt, L, Δx)
+    function HJParameters(;T, Δt, Linf, Lsup, Δx)
         Nt      = Int(floor(T/Δt))
         _T      = Nt * Δt
         time    = range(0,T,Nt+1)
-        Nx      = Int(floor(L/Δx))+1
-        _L      = (Nx-1) * Δx
-        space   = range(0,L,Nx)
-        new(_T, Nt, Δt, time, _L, Nx, Δx, space)
+        Nx      = Int(floor((Lsup - Linf)/Δx))+1
+        _Lsup   = (Nx-1) * Δx + Linf
+        space   = range(Linf,Lsup,Nx)
+        new(_T, Nt, Δt, time, Linf, _Lsup, Nx, Δx, space)
     end
 end
 
-function HJParameters(params; T = params.T, Nt = params.Nt, L = params.L, Nx = params.Nx)
-    HJParameters(;T = T, Nt = Nt, L = L, Nx = Nx)
+function HJParameters(params; T = params.T, Nt = params.Nt, Linf = params.Linf, Lsup = params.Lsup, Nx = params.Nx)
+    HJParameters(;T = T, Nt = Nt, Linf = Linf, Lsup = Lsup, Nx = Nx)
 end
 
-function HJParameters(params; T = params.T, Δt = params.Δt, L = params.L, Δx = params.Δx)
-    HJParameters(;T = T, Δt = Δt, L = L, Δx = Δx)
+function HJParameters(params; T = params.T, Δt = params.Δt, Linf = params.Linf, Lsup = params.Lsup, Δx = params.Δx)
+    HJParameters(;T = T, Δt = Δt, Linf = Linf, Lsup = Lsup Δx = Δx)
 end
 
 function Base.show(io::IO, params::HJParameters)

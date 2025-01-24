@@ -8,10 +8,12 @@ module HamiltonJacobi1D
     export HJParameters, HJProblem, HJSolution, HJEquation
 
     Base.@kwdef struct HJEquation
-        H                 # Principal hamiltonian
-        G  = nothing      # Second hamiltonian
-        u0                # Initial Condition
-        f  = nothing      # Source Term
+        domain::Tuple{Real,Real}    # Spatial domain of the equation
+        H                           # Principal hamiltonian
+        G  = nothing                # Second hamiltonian
+        f  = nothing                # Source Term
+        u0                          # Initial Condition
+        u  = nothing                # Analytical solution if it is known
     end
 
     include("parameters.jl")
@@ -21,24 +23,26 @@ module HamiltonJacobi1D
         equation::HJEquation        # Equation
         scheme::TS                  # Scheme
         name::String                # Name given to the problem
-        function HJProblem(;T, Nt, L, Nx, H, u0, scheme, name = "")
-            params = HJParameters(;T = T, Nt = Nt, L = L, Nx = Nx)
-            equation = HJEquation(H = H, u0 = u0)
-            new{typeof(scheme)}(params, equation, scheme, name)
-        end
         function HJProblem(params::HJParameters, equation::HJEquation, scheme::HJScheme, name = "")
             new{typeof(scheme)}(params, equation, scheme, name)
         end
+        function HJProblem(;T, Nt, Nx, equation::HJEquation, scheme::HJEquation, name = "")
+            params = HJParameters(;T = T, Nt = Nt, Linf = domain[1], Lsup = domain[2], Nx = Nx)
+            new{typeof(scheme)}(params, equation, scheme, name)
+        end
     end
-    function HJProblem(prob::HJProblem; params = prob.params)
-        HJProblem(params, prob.equation, prob.scheme, prob.name)
+    function HJProblem(prob::HJProblem; params::HJParameters = prob.params, 
+        scheme::HJScheme = prob.scheme, name::String = prob.name)
+        HJProblem(params, prob.equation,scheme, name)
     end
     
     include("solution.jl")
 
-    solve(prob::HJProblem) = solve(prob.params, prob.equation, prob.scheme, prob.name)
+    solve(params::HJParameters, equation::HJEquation, scheme::HJScheme, name::String = "") =
+        solve(HJProblem(params, equation, scheme, name))
     
-    function solve(params::HJParameters, equation::HJEquation, scheme::HJScheme, name::String = "")
+    function solve(prob::HJProblem)
+        @unpack params, equation, scheme, name = prob
         @unpack Nx, Nt, space = params
         @unpack u0 = equation
         # ALLOCATION FOR THE SOLUTION
@@ -48,7 +52,7 @@ module HamiltonJacobi1D
         # PERFORMSTEP (Currently it is all steps)
         performstep!(scheme, params, equation, U)
         # Make Solution
-        HJSolution(params, equation, scheme, U, name)
+        HJSolution(prob, U, name)
     end
 
     export Upwind
