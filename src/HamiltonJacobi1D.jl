@@ -26,8 +26,8 @@ module HamiltonJacobi1D
         function HJProblem(params::HJParameters, equation::HJEquation, scheme::HJScheme, name = "")
             new{typeof(scheme)}(params, equation, scheme, name)
         end
-        function HJProblem(;T, Nt, Nx, equation::HJEquation, scheme::HJEquation, name = "")
-            params = HJParameters(;T = T, Nt = Nt, Linf = domain[1], Lsup = domain[2], Nx = Nx)
+        function HJProblem(;T, Nt, Nx, equation::HJEquation, scheme::HJScheme, name = "")
+            params = HJParameters(;T = T, Nt = Nt, Linf = equation.domain[1], Lsup = equation.domain[2], Nx = Nx)
             new{typeof(scheme)}(params, equation, scheme, name)
         end
     end
