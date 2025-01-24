@@ -38,6 +38,7 @@ module HamiltonJacobi1D
     
     include("solution.jl")
 
+    export solve
     solve(params::HJParameters, equation::HJEquation, scheme::HJScheme, name::String = "") =
         solve(HJProblem(params, equation, scheme, name))
     
@@ -55,8 +56,8 @@ module HamiltonJacobi1D
         HJSolution(prob, U, name)
     end
 
-    export Upwind
-    export solve
+    export Upwind, SemiLagrangian
+
     include("schemes.jl")
 
 
