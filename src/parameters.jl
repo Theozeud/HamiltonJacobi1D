@@ -46,4 +46,6 @@ function Base.show(io::IO, params::HJParameters)
     println(io, "Space = [$(params.space[begin]),$(params.space[end])]")
     println(io, "Nx = $(params.Nx)")
     println(io, "Δx = $(params.Δx)")
+    cfl = params.Δt/params.Δx
+    println(io, "CFL = $cfl")
 end
